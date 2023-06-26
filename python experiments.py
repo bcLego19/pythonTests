@@ -1,0 +1,106 @@
+# Online Python compiler (interpreter) to run Python online.
+# Write Python 3 code in this online editor and run it.
+
+import random
+
+def small(a,b):
+    if(type(a) is not int or type(b) is not int): return -1
+    if(a<b): return a
+    else: return b
+
+def inputPrompt(caseValue):
+    if caseValue == 1:
+        print("Please enter a number:")
+    elif caseValue == 2:
+        print("Please enter a valid integer number:")
+    elif caseValue == 3:
+        print("Please guess what the number is (q to exit): ")
+    elif caseValue == 4:
+        print("The number is higher than the secret number.")
+    elif caseValue == 5:
+        print("The number is lower than the secret number.")
+    elif caseValue == 6:
+        print("You have guessed the secret number!")
+    elif caseValue == 7:
+        print("Would you like to play again? (y/n): ")
+    elif caseValue == 8:
+        print("Do you wish to exit? (y/n): ")
+    else:
+        print("There is an error in the prompt. Exiting.")
+
+def isInt(a):
+    try:
+        int(a)
+        return True
+    except ValueError:
+        return False
+
+def intConverter(string):
+    return int(string)
+
+def getInt(x):
+    testval = isInt(x)
+    if (testval is False): return -2
+    return intConverter(x)
+
+def isInputTextCommand(inputString):
+    if (inputString in ["q","y","n","yes","no","quit"]): return True
+    else: return False
+
+def getInputValue():
+    x = input()
+    if (x in ["q","y","n","yes","no","quit"]): return x
+    else: return getInt(x)
+
+def initialValues():
+    print("Please enter a non-negative lower value.")
+    lowerValue = getInputValue()
+    if (lowerValue in ["q","quit"]): return lowerValue
+    while (lowerValue == -2 or isInputTextCommand(lowerValue)):
+        inputPrompt(2)
+        lowerValue = getInputValue()
+        if (lowerValue in ["q","quit"]): return lowerValue
+    print("Please enter a non-negative upper value that is larger than the lower value")
+    upperValue = getInputValue()
+    if (upperValue in ["q","quit"]): return upperValue
+    while (upperValue == -2 or isInputTextCommand(upperValue) or upperValue < lowerValue):
+        inputPrompt(2)
+        upperValue = getInputValue()
+        if (upperValue in ["q","quit"]): return upperValue
+    return [lowerValue, upperValue]
+
+def guessingGame():
+    limits = initialValues()
+    if (limits in ["q","quit"]): return limits
+    magicNumber = random.randint(limits[0], limits[1])
+    
+    inputPrompt(3)
+    userInput = getInputValue()
+    while(userInput not in ["q","quit"]):
+        if(userInput < limits[0] or userInput > limits[1]):
+            print("That number is not within the given limits.")
+            inputPrompt(3)
+        else:
+            if(userInput == magicNumber):
+                inputPrompt(6)
+                print("The magic number is", magicNumber)
+                break
+            else:
+                if (userInput < magicNumber): inputPrompt(5)
+                else: inputPrompt(4)
+                    
+        userInput = getInputValue()
+    
+def runGuessingGame():
+    print("Welcome to the guessing game.")
+    print("You can exit this game at any time by entering q or quit.")
+    
+    confirmation = ""
+    while (confirmation not in ["n","no","q","quit"]):
+        guessingGame()
+        inputPrompt(7)
+        confirmation = getInputValue()
+        
+    print("Thank you for playing the guessing game.")
+    
+runGuessingGame()
