@@ -56,8 +56,12 @@ def main():
     print("----------")
     print_official_songs(official_list)
     
-    url_list = get_urls(official_list)
-    download_audio_list(url_list, output_path)
+    print("----------")
+    do_download = input("Do you want to download? ")
+    print("----------")
+    if (do_download == "yes"):
+        url_list = get_urls(official_list)
+        download_audio_list(url_list, output_path)
 
 if __name__ == '__main__':
     main()
