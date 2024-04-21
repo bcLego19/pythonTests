@@ -1,9 +1,9 @@
 
 
 def caesar_cipher(text, key, encrypt = True):
-    alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
     shifted_alphabet = alphabet[key:] + alphabet[:key]
-    translation_table = str.maketrans(shifted_alphabet, alphabet)
+    translation_table = str.maketrans(alphabet, shifted_alphabet)
     if not encrypt:
         translation_table = str.maketrans(shifted_alphabet, alphabet)
     return text.translate(translation_table)
@@ -15,5 +15,5 @@ encrypted_text = caesar_cipher(text, shiftKey)
 print(encrypted_text)
 
 #example of how to decrypt
-decrypted_text = caesar_cipher(text, shiftKey, encrypt=False)
+decrypted_text = caesar_cipher(encrypted_text, shiftKey, encrypt=False)
 print(decrypted_text)
