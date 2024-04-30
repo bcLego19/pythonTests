@@ -1,4 +1,5 @@
 # Experiment to test YouTube video download functionality (comments added 11/17/2023)
+from pytube.cli import on_progress
 from pytube import YouTube, Search
 import os
 
@@ -55,15 +56,15 @@ def search_and_choose():
   except ValueError:
     print("Invalid input. Please enter a valid number.")
 
-# Function to handle video download process
 def download_video(video_url, download_audio=False):
   """
   This function downloads a YouTube video (entire video or audio only) based on the URL
-  and user selection. It prompts the user for a file path and displays download status messages.
+  and user selection. It prompts the user for a file path, displays download status messages,
+  and utilizes the built-in on_progress callback for a progress bar.
   """
   try:
-    # Create a YouTube object from the video URL
-    yt = YouTube(video_url)
+    # Create a YouTube object with the on_progress_callback set
+    yt = YouTube(video_url, on_progress_callback=on_progress)
 
     if download_audio:
       # Select the first audio stream (presumably highest quality)
@@ -80,10 +81,15 @@ def download_video(video_url, download_audio=False):
     print(f"Starting download of {'audio' if download_audio else 'video'} [{yt.title}] to {filepath or 'the current directory'}")
 
     # Download the audio/video stream using the download method
-    audio_stream.download(filepath) if download_audio else video_stream.download(filepath)
+    if download_audio:
+      audio_stream.download(filepath)
+    else:
+      video_stream.download(filepath)
+
     print("Download completed successfully.")
   except Exception as e:
     print(f"An error has occurred: {e}")
+
 
 # Execute the search and choose function if script is run directly
 if __name__ == "__main__":
