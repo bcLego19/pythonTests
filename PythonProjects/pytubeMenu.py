@@ -1,7 +1,48 @@
+# Last update 5/11/2024 by Conner Batson
+#
 # Experiment to test YouTube video download functionality (comments added 11/17/2023)
 from pytube.cli import on_progress
 from pytube import YouTube, Search
 import os
+
+# Default directory global
+DEFAULT_DOWNLOAD_DIR = os.getcwd()
+
+def get_user_input(prompt, valid_options=None):
+  """
+  This function prompts the user for input and validates it against
+  optional valid_options list. It returns the chosen option.
+  """
+  while True:
+    user_input = input(prompt).lower()
+    if valid_options and user_input not in valid_options:
+      print("Invalid input. Please enter one of:", ", ".join(valid_options))
+    else:
+      return user_input
+
+def download_stream(stream, filepath=None):
+  """
+  This function downloads the provided stream to the specified filepath
+  or the default download directory (from config.py). It utilizes the
+  built-in on_progress callback for a progress bar and raises a
+  DownloadError for any exceptions encountered during download.
+  """
+  try:
+    # Access default download directory from config.py
+    download_dir = os.path.join(os.getcwd(), DEFAULT_DOWNLOAD_DIR)
+    filepath = filepath if filepath else download_dir
+
+    # Download logic using stream.download(filepath)
+    stream.download(filepath, callback=on_progress)
+    print("Download completed successfully.")
+  except Exception as e:
+    raise DownloadError(f"An error occurred during download: {e}") from e
+  
+class DownloadError(Exception):
+  """
+  Custom exception class to handle download-related errors.
+  """
+  pass
 
 # Function to handle YouTube search and video selection process
 def search_and_choose():
@@ -10,7 +51,7 @@ def search_and_choose():
   displays results, allows browsing additional pages, and lets the user choose a video
   to download (entire video or audio only).
   """
-  query = input("Enter your search query: ")
+  query = get_user_input("Enter your search query: ")
 
   # Perform YouTube search and store results
   search_obj = Search(query)
@@ -39,12 +80,12 @@ def search_and_choose():
 
   # Prompt user to choose a video or exit
   try:
-    choice = int(input("Enter the number of the video you want to download (0 to exit): "))
+    choice = int(get_user_input("Enter the number of the video you want to download (0 to exit): "))
     if 0 < choice <= len(search_results):
       chosen_video = search_results[choice - 1]
 
       # Prompt user to choose video or audio download and call download function
-      download_option = input("Do you want to download Video (v) or Audio (a) only? ").lower()
+      download_option = get_user_input("Do you want to download Video (v) or Audio (a) only? ").lower()
       if download_option == 'v':
         download_video(chosen_video.watch_url, download_audio=False)
       elif download_option == 'a':
@@ -74,7 +115,7 @@ def download_video(video_url, download_audio=False):
       video_stream = yt.streams.get_highest_resolution()
 
     # Prompt user for file path or use current directory if none provided
-    filepath = input("Enter the file path to save the {} (press Enter for current directory): ".format("audio" if download_audio else "video"))
+    filepath = get_user_input("Enter the file path to save the {} (press Enter for current directory): ".format("audio" if download_audio else "video"))
     filepath = filepath if filepath else None
 
     # Print download start message with chosen filename or indicating current directory
@@ -82,9 +123,9 @@ def download_video(video_url, download_audio=False):
 
     # Download the audio/video stream using the download method
     if download_audio:
-      audio_stream.download(filepath)
+      download_stream(audio_stream, filepath)
     else:
-      video_stream.download(filepath)
+      download_stream(video_stream, filepath)
 
     print("Download completed successfully.")
   except Exception as e:
