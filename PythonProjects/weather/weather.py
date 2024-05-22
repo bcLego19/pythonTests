@@ -1,58 +1,59 @@
 import requests
 
-class Weather:
-  def __init__(self, city, api_key):
-    self.city = city
-    self.api_key = api_key
-    self.temperature = None
+class ApiError(Exception):
+  pass
 
-  def get_weather(self):
-    # Build the API request URL
-    url = f"http://api.openweathermap.org/data/2.5/weather?q={self.city}&appid={self.api_key}&units=metric"
-    # Make the API request using requests library (assumed installed)
+def fetch_weather_data(city, api_key):
+    url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
     response = requests.get(url)
-
-    # Check for successful response
     if response.status_code == 200:
-      # Parse the JSON data
-      data = response.json()
-      # Extract temperature in Kelvin
-      self.temperature = data["main"]["temp"]
+        return response.json()
     else:
-      print(f"Error retrieving weather data for {self.city}")
+        raise ApiError(f"Error retrieving weather data for {city} (Status Code: {response.status_code})")
 
-  def convert_to_fahrenheit(self):
-    # Check if temperature is retrieved first
-    if self.temperature is None:
-      print("Weather data not available. Please call get_weather() first.")
-      return
-    # Conversion formula: Fahrenheit = (Celsius x 9/5) + 32
-    fahrenheit = (self.temperature * 9/5) + 32
-    return fahrenheit
+class Weather:
+    def __init__(self, city, api_key):
+        self.city = city
+        self.api_key = api_key
+        self.data = None
 
-  def display_weather(self):
-    # Check if temperature is retrieved first
-    if self.temperature is None:
-      print("Weather data not available. Please call get_weather() first.")
-      return
-    # Display city, temperature in Celsius and Fahrenheit with f-strings
-    print(f"City: {self.city}")
-    print(f"Temperature: {self.temperature:.2f} °C")
-    print(f"Temperature: {self.convert_to_fahrenheit():.2f} °F")
+    def get_weather(self):
+        try:
+            self.data = fetch_weather_data(self.city, self.api_key)
+        except ApiError as e:
+            print(e)
 
-def getWeatherForCity(cityName):
-    # Replace with your desired city
-    city = cityName
-    # Update with the provided API key
-    api_key = "YOUR_API_KEY"
+    def display_weather(self):
+        if self.data is None:
+            print("Weather data not available. Please call get_weather() first.")
+            return
+        # Extract specific data using dictionary keys
+        temperature = self.data["main"]["temp"]
+        feels_like = self.data["main"]["feels_like"]
+        humidity = self.data["main"]["humidity"]
+        description = self.data["weather"][0]["description"]
 
-    # Create a Weather object
-    weather = Weather(city, api_key)
+        print(f"City: {self.city}")
+        print(f"Temperature: {temperature:.2f} °C")
+        print(f"Feels Like: {feels_like:.2f} °C")
+        print(f"Humidity: {humidity}%")
+        print(f"Description: {description}")
 
-    # Call get_weather() to retrieve data
+    def get_temperature(self):
+        if self.data is None:
+            return None
+        return self.data["main"]["temp"]
+
+    # Add similar methods to access other weather data (feels_like, humidity, etc.)
+
+def getWeatherForCity(city_name, api_key):
+    weather = Weather(city_name, api_key)
     weather.get_weather()
-
-    # Display the weather information
     weather.display_weather()
 
-getWeatherForCity("La Center")
+# Usage with improved error handling
+try:
+    getWeatherForCity("Woodland", "db97951a4214b613f1ab9a0aa90d2709")
+except ApiError as e:
+    print(f"An error occurred: {e}")
+
