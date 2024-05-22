@@ -40,16 +40,19 @@ class Weather:
     print(f"Temperature: {self.temperature:.2f} °C")
     print(f"Temperature: {self.convert_to_fahrenheit():.2f} °F")
 
-# Replace with your desired city
-city = "Vancouver"
-# Update with the provided API key
-api_key = "YOUR_API_KEY"
+def getWeatherForCity(cityName):
+    # Replace with your desired city
+    city = cityName
+    # Update with the provided API key
+    api_key = "YOUR_API_KEY"
 
-# Create a Weather object
-weather = Weather(city, api_key)
+    # Create a Weather object
+    weather = Weather(city, api_key)
 
-# Call get_weather() to retrieve data
-weather.get_weather()
+    # Call get_weather() to retrieve data
+    weather.get_weather()
 
-# Display the weather information
-weather.display_weather()
+    # Display the weather information
+    weather.display_weather()
+
+getWeatherForCity("La Center")
