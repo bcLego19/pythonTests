@@ -53,7 +53,7 @@ def getWeatherForCity(city_name, api_key):
 
 # Usage with improved error handling
 try:
-    getWeatherForCity("Woodland", "db97951a4214b613f1ab9a0aa90d2709")
+    getWeatherForCity("Woodland", "YOUR_API_KEY_HERE")
 except ApiError as e:
     print(f"An error occurred: {e}")
 
