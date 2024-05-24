@@ -30,6 +30,7 @@ class Weather:
         self.api_key = api_key
         self.data = None
         self.units = units
+        self.temperature = None
 
     def set_units(self, newUnits):
         self.units = newUnits
@@ -66,6 +67,7 @@ class Weather:
     def get_temperature(self):
         if self.data is None:
             return None
+        self.set_temperature(self.data["main"]["temp"])
         return self.data["main"]["temp"]
     
     def get_feels_like(self):
@@ -86,17 +88,28 @@ class Weather:
     def get_lat(self):
         if self.data is None:
             return None
+        self.set_lat(self.data["coord"]["lat"])
         return self.data["coord"]["lat"]
     
     def get_lon(self):
         if self.data is None:
             return None
+        self.set_lon(self.data["coord"]["lon"])
         return self.data["coord"]["lon"]
     
     def get_city(self):
         if self.data is None:
             return None
+        if self.city is None:
+            return None
         return self.city
+    
+    def get_units(self):
+        return self.units
+    
+    def set_units(self, newunits):
+        self.units = newunits
+        return
     
     def set_city(self, newcity):
         self.city = newcity
@@ -106,13 +119,45 @@ class Weather:
         self.lat = newlat
         self.lon = newlon
         return
+    
+    def set_lat(self, newlat):
+        self.lat = newlat
+        return
+    
+    def set_lon(self, newlon):
+        self.lon = newlon
+        return
+    
+    def set_temperature(self, temperature):
+        self.temperature = temperature
+        return
+    
+    def celsius_to_fahrenheit(self, temp_celsius):
+        newtemp = (temp_celsius * (9/5)) + 32
+        self.set_temperature(newtemp)
+        return newtemp
 
-    # Add similar methods to access other weather data (feels_like, humidity, etc.)
+    def fahrenheit_to_celsius(self, temp_fahrenheit):
+        newtemp = (temp_fahrenheit - 32) * (5/9)
+        self.set_temperature(newtemp)
+        return newtemp
 
 def getWeatherForCity(city_name, api_key, units):
     weather = Weather(city_name, api_key, units)
     weather.get_weather()
     weather.display_weather()
+    temp = weather.get_temperature()
+    print(temp)
+    newtemp = None
+    if (weather.get_units() == "imperial"):
+        newtemp = weather.fahrenheit_to_celsius(temp)
+    elif (weather.get_units() == "metric"):
+        newtemp = weather.celsius_to_fahrenheit(temp)
+    else:
+        newtemp = temp
+    
+    print(newtemp)
+    print(weather.get_units())
 
 # Usage with improved error handling
 YOUR_API_KEY = "YOUR_API_KEY"
