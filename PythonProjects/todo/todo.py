@@ -10,6 +10,8 @@ except:
     pass
 
 # Add Todo
+if(len(sys.argv) >= 3 and sys.argv[1].lower() == "add"):
+    todos.append(sys.argv[2] +"\n")
 
 # Remove Todo
 
