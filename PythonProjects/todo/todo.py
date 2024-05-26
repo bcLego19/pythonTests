@@ -1,13 +1,22 @@
 import sys
 FILENAME = "todo_data.txt"
+todos = []
 
 # Read File
+try:
+    with open(FILENAME, "r") as file:
+        todos = file.readlines()
+except:
+    pass
 
 # Add Todo
 
 # Remove Todo
 
 # Save File
+file = open(FILENAME, "w")
+file.writelines(todos)
+file.close()
 
 # Print List
 with open(FILENAME, "r") as file:
