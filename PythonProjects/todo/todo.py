@@ -33,11 +33,8 @@ file.close()
 if len(todos) == 0:
     print("You have no todo items :)")
 else:
-    with open(FILENAME, "r") as file:
-        i = 1
-        for line in file:
-            print(f"{i}. "+line)
-            i += 1
+    for x in range(len(todos)):
+        print(f"{x+1}. {todos[x]}", end="")
 
 # Print Commands
 print("\n=========================================\n")
