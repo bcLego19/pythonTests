@@ -14,6 +14,15 @@ if(len(sys.argv) >= 3 and sys.argv[1].lower() == "add"):
     todos.append(sys.argv[2] +"\n")
 
 # Remove Todo
+if(len(sys.argv) >= 3 and sys.argv[1].lower() == "remove"):
+    try:
+        index_to_delete = int(sys.argv[2])
+        if (index_to_delete > 0):
+            index_to_delete -= 1
+            del(todos[index_to_delete])
+    except Exception as e:
+        print(e)
+        sys.exit(1)
 
 # Save File
 file = open(FILENAME, "w")
