@@ -10,6 +10,11 @@ FILENAME = "todo_data.txt"
 # Save File
 
 # Print List
+with open(FILENAME, "r") as file:
+    i = 1
+    for line in file:
+        print(f"{i}. "+line)
+        i += 1
 
 # Print Commands
 print("\n=========================================\n")
