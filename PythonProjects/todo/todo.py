@@ -25,9 +25,8 @@ if(len(sys.argv) >= 3 and sys.argv[1].lower() == "remove"):
         sys.exit(1)
 
 # Save File
-file = open(FILENAME, "w")
-file.writelines(todos)
-file.close()
+with open(FILENAME, "w") as file:
+    file.writelines(todos)
 
 # Print List
 if len(todos) == 0:
