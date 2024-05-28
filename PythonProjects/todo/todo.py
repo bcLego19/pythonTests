@@ -7,8 +7,10 @@ def readFile():
     try:
         with open(FILENAME, "r") as file:
             todos = file.readlines()
-    except:
-        pass
+    except FileNotFoundError:
+        print("No existing to-do list found. A new data file will be created.")
+    except Exception as e:
+        print(f"Error loading list: {e}")
     
     return todos
 
