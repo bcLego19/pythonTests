@@ -56,12 +56,39 @@ def print_usage():
     print(f"\nTo add a ToDo:\n{sys.argv[0]} add \"Clean Room\"\n")
     print(f"To remove or complete ToDo:\n{sys.argv[0]} remove 2\n")
 
+def checkArgs():
+    command = ""
+    if (len(sys.argv) == 1):
+        command = "help"
+    elif (len(sys.argv) >= 2 and sys.argv[1] == "print"):
+        command = "print"
+    elif (len(sys.argv) >= 2 and (sys.argv[1] == "add" or sys.argv[1] == "remove")):
+        command = "too few args"
+    elif (len(sys.argv) >= 3 and sys.argv[1] == "add"):
+        command = "add"
+    elif (len(sys.argv) >= 3 and sys.argv[1] == "remove"):
+        command = "remove"
+    else:
+        command = sys.argv[1]
+
+    return command
+
 def todoMain():
     todos = readFile()
-    addTodo(todos)
-    removeTodo(todos)
+    action = checkArgs()
+    if (action == "help"):
+        print_usage() 
+    elif (action == "add"):
+        addTodo(todos)
+    elif (action == "remove"):
+        removeTodo(todos)
+    elif (action == "print"):
+        printList(todos)
+    elif (action == "too few args"):
+        print("Not enough arguments: add/remove needs at least three arguments.")
+        print_usage()
+    else:
+        print(f"Invalid command: {action}")
     saveFile(todos)
-    printList(todos)
-    print_usage()
 
 todoMain()
