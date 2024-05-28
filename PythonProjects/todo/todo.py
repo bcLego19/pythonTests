@@ -35,8 +35,11 @@ def removeTodo(todos):
 
 def saveFile(todos):
     # Save File
-    with open(FILENAME, "w") as file:
-        file.writelines(todos)
+    try:
+        with open(FILENAME, "w") as file:
+            file.writelines(todos)
+    except Exception as e:
+        print(f"Error saving file: {e}")
 
 def printList(todos):
     # Print List
