@@ -1,42 +1,60 @@
 import sys
 FILENAME = "todo_data.txt"
-todos = []
 
-# Read File
-try:
-    with open(FILENAME, "r") as file:
-        todos = file.readlines()
-except:
-    pass
-
-# Add Todo
-if(len(sys.argv) >= 3 and sys.argv[1].lower() == "add"):
-    todos.append(sys.argv[2] +"\n")
-
-# Remove Todo
-if(len(sys.argv) >= 3 and sys.argv[1].lower() == "remove"):
+def readFile():
+    todos = []
+    # Read File
     try:
-        index_to_delete = int(sys.argv[2])
-        if (index_to_delete > 0):
-            index_to_delete -= 1
-            del(todos[index_to_delete])
-    except Exception as e:
-        print(e)
-        sys.exit(1)
+        with open(FILENAME, "r") as file:
+            todos = file.readlines()
+    except:
+        pass
+    
+    return todos
 
-# Save File
-with open(FILENAME, "w") as file:
-    file.writelines(todos)
+def addTodo(todos):
+    # Add Todo
+    if(len(sys.argv) >= 3 and sys.argv[1].lower() == "add"):
+        todos.append(sys.argv[2] +"\n")
 
-# Print List
-if len(todos) == 0:
-    print("You have no todo items :)")
-else:
-    for x in range(len(todos)):
-        print(f"{x+1}. {todos[x]}", end="")
+def removeTodo(todos):
+    # Remove Todo
+    if(len(sys.argv) >= 3 and sys.argv[1].lower() == "remove"):
+        try:
+            index_to_delete = int(sys.argv[2])
+            if (index_to_delete > 0):
+                index_to_delete -= 1
+                del(todos[index_to_delete])
+        except Exception as e:
+            print(e)
+            sys.exit(1)
 
-# Print Commands
-print("\n=========================================\n")
-print(f"To view ToDos:\n{sys.argv[0]}")
-print(f"\nTo add a ToDo:\n{sys.argv[0]} add \"Clean Room\"\n")
-print(f"To remove or complete ToDo:\n{sys.argv[0]} remove 2\n")
+def saveFile(todos):
+    # Save File
+    with open(FILENAME, "w") as file:
+        file.writelines(todos)
+
+def printList(todos):
+    # Print List
+    if len(todos) == 0:
+        print("You have no todo items :)")
+    else:
+        for x in range(len(todos)):
+            print(f"{x+1}. {todos[x]}", end="")
+
+def print_usage():
+    # Print Commands
+    print("\n=========================================\n")
+    print(f"To view ToDos:\n{sys.argv[0]}")
+    print(f"\nTo add a ToDo:\n{sys.argv[0]} add \"Clean Room\"\n")
+    print(f"To remove or complete ToDo:\n{sys.argv[0]} remove 2\n")
+
+def todoMain():
+    todos = readFile()
+    addTodo(todos)
+    removeTodo(todos)
+    saveFile(todos)
+    printList(todos)
+    print_usage()
+
+todoMain()
