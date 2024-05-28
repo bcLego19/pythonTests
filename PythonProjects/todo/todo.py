@@ -24,9 +24,11 @@ def removeTodo(todos):
     if(len(sys.argv) >= 3 and sys.argv[1].lower() == "remove"):
         try:
             index_to_delete = int(sys.argv[2])
-            if (index_to_delete > 0):
+            if (index_to_delete > 0 and index_to_delete <= len(todos)):
                 index_to_delete -= 1
                 del(todos[index_to_delete])
+            else:
+                print(f"Invalid todo index. Please enter a number between 1 and {len(todos)}.")
         except Exception as e:
             print(e)
             sys.exit(1)
