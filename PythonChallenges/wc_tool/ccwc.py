@@ -39,6 +39,13 @@ def countWords(data):
 def countChars(data):
    return len(data)
 
+def defaultAction(data, filename):
+    if data:
+        byteCount = countBytes(filename)
+        lineCount = countLines(data)
+        wordCount = countWords(data)
+    print(f"{lineCount} {wordCount} {byteCount} {filename}")
+
 def main():
     if (len(sys.argv) == 1):
         print(f"ccwc {LEGAL_COMMANDS} \"test.txt\"")
@@ -62,10 +69,7 @@ def main():
         filename = sys.argv[1]
         data = read_data(filename)
         if data:
-            byteCount = countBytes(filename)
-            lineCount = countLines(data)
-            wordCount = countWords(data)
-        print(f"{lineCount} {wordCount} {byteCount} {filename}")
+            defaultAction(data, filename)
     elif (len(sys.argv) >= 3 and legal_commands(sys.argv[1], LEGAL_COMMANDS)):
         command = sys.argv[1]
         filename = sys.argv[2]
