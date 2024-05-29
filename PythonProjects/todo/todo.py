@@ -60,20 +60,24 @@ def todoMain():
     todos = readFile()
     argumentLength = len(sys.argv)
     actions = ("print", "add", "remove")
+    action = ""
     if (argumentLength == 1):
         print_usage()
-    elif (argumentLength >= 2 and sys.argv[1] in actions):
-        if (sys.argv[1] == "print"):
+    elif (argumentLength >= 2 and sys.argv[1].lower() in actions):
+        action = sys.argv[1].lower()
+        if (action == "print"):
             printList(todos)
         else:
             print(f"{sys.argv[1]} requires at least one input value.")
-    elif (argumentLength >= 3 and sys.argv[1] in actions):
-        if (sys.argv[1] == "add"): 
+    elif (argumentLength >= 3 and sys.argv[1].lower() in actions):
+        action = sys.argv[1].lower()
+        if (action == "add"): 
             addTodo(todos)
-        elif (sys.argv[1] == "remove"):
+        elif (action == "remove"):
             removeTodo(todos)
     else:
-        print(f"Invalid command: {sys.argv[1]}")
+        action = sys.argv[1].lower()
+        print(f"Invalid command: {action}")
     saveFile(todos)
 
 todoMain()
