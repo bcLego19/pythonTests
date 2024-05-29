@@ -16,22 +16,21 @@ def readFile():
 
 def addTodo(todos):
     # Add Todo
-    if(len(sys.argv) >= 3 and sys.argv[1].lower() == "add"):
-        todos.append(sys.argv[2] +"\n")
+    todos.append(sys.argv[2] +"\n")
 
 def removeTodo(todos):
     # Remove Todo
-    if(len(sys.argv) >= 3 and sys.argv[1].lower() == "remove"):
-        try:
-            index_to_delete = int(sys.argv[2])
-            if (index_to_delete > 0 and index_to_delete <= len(todos)):
-                index_to_delete -= 1
-                del(todos[index_to_delete])
-            else:
-                print(f"Invalid todo index. Please enter a number between 1 and {len(todos)}.")
-        except Exception as e:
-            print(e)
-            sys.exit(1)
+    try:
+        index_to_delete = int(sys.argv[2])
+        index_to_delete -= 1
+        del(todos[index_to_delete])
+    except ValueError:
+        print(f"Invalid input: {sys.argv[2]} is not a number.")
+    except IndexError:
+        print(f"Invalid todo index. Please enter a number between 1 and {len(todos)}.")
+    except Exception as e:
+        print(e)
+        sys.exit(1)
 
 def saveFile(todos):
     # Save File
@@ -56,20 +55,29 @@ def print_usage():
     print(f"\nTo add a ToDo:\n{sys.argv[0]} add \"Clean Room\"\n")
     print(f"To remove or complete ToDo:\n{sys.argv[0]} remove 2\n")
 
+def usageCheck(argLength):
+    return (argLength == 1)
+
+def printCheck(argLength, argument, legal_arguments):
+    return (argLength >= 2 and argument in legal_arguments)
+
+def actionCheck(argLength, argument, legal_arguments):
+    return (argLength >= 3 and argument in legal_arguments)
+
 def todoMain():
     todos = readFile()
     argumentLength = len(sys.argv)
     actions = ("print", "add", "remove")
     action = ""
-    if (argumentLength == 1):
+    if (usageCheck(argumentLength)):
         print_usage()
-    elif (argumentLength >= 2 and sys.argv[1].lower() in actions):
+    elif (printCheck(argumentLength, sys.argv[1].lower(), actions)):
         action = sys.argv[1].lower()
         if (action == "print"):
             printList(todos)
         else:
             print(f"{sys.argv[1]} requires at least one input value.")
-    elif (argumentLength >= 3 and sys.argv[1].lower() in actions):
+    elif (actionCheck(argumentLength, sys.argv[1].lower(), actions)):
         action = sys.argv[1].lower()
         if (action == "add"): 
             addTodo(todos)
