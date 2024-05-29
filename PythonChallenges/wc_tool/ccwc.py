@@ -11,13 +11,17 @@ LEGAL_COMMANDS = ["-c", "-l", "-w", "-m"]
 def legal_commands(input, legal_input):
     return input in legal_input
 
-def read_file(filename):
-  try:
-    with open(filename, "rb") as file:
-      return file.read().decode("utf-8")  # Decode for character processing
-  except Exception as e:
-    print(f"Error opening file: {e}")
-    return None
+def read_data(source):
+    if source == "-": # check for standard input flag
+        # read from standard input
+        return sys.stdin.read()
+    else:
+        try:
+            with open(source, "rb") as file:
+                return file.read().decode("utf-8")  # Decode for character processing
+        except Exception as e:
+            print(f"Error opening file: {e}")
+            return None
 
 def countBytes(FILENAME):
     try:
@@ -38,9 +42,25 @@ def countChars(data):
 def main():
     if (len(sys.argv) == 1):
         print(f"ccwc {LEGAL_COMMANDS} \"test.txt\"")
+    elif (len(sys.argv) == 2 and legal_commands(sys.argv[1], LEGAL_COMMANDS)):
+        command = sys.argv[1]
+        data = read_data("-")  # Read from standard input
+        if data:
+            if (command == "-c"):
+                byteCount = countBytes(data)
+                print(str(byteCount))
+            elif (command == "-l"):
+                lineCount = countLines(data)
+                print(str(lineCount))
+            elif (command == "-w"):
+                wordCount = countWords(data)
+                print(str(wordCount))
+            elif (command == "-m"):
+                charCount = countChars(data)
+                print(str(charCount))
     elif (len(sys.argv) >= 2 and not legal_commands(sys.argv[1], LEGAL_COMMANDS)):
         filename = sys.argv[1]
-        data = read_file(filename)
+        data = read_data(filename)
         if data:
             byteCount = countBytes(filename)
             lineCount = countLines(data)
@@ -50,7 +70,7 @@ def main():
         command = sys.argv[1]
         filename = sys.argv[2]
         
-        data = read_file(filename)
+        data = read_data(filename)
         if (command == "-c"):
             byteCount = countBytes(sys.argv[2])
             print(str(byteCount) + f" {sys.argv[2]}")
