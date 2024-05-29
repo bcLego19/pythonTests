@@ -38,8 +38,14 @@ def countChars(data):
 def main():
     if (len(sys.argv) == 1):
         print(f"ccwc {LEGAL_COMMANDS} \"test.txt\"")
-    elif (len(sys.argv) == 2 and legal_commands(sys.argv[1], LEGAL_COMMANDS)):
-        print("Too few arguments: Missing file")
+    elif (len(sys.argv) >= 2 and not legal_commands(sys.argv[1], LEGAL_COMMANDS)):
+        filename = sys.argv[1]
+        data = read_file(filename)
+        if data:
+            byteCount = countBytes(filename)
+            lineCount = countLines(data)
+            wordCount = countWords(data)
+        print(f"{lineCount} {wordCount} {byteCount} {filename}")
     elif (len(sys.argv) >= 3 and legal_commands(sys.argv[1], LEGAL_COMMANDS)):
         command = sys.argv[1]
         filename = sys.argv[2]
