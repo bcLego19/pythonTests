@@ -6,7 +6,7 @@ See man wc in your local terminal for more
 
 import sys
 
-LEGAL_COMMANDS = ["-c", "-l"]
+LEGAL_COMMANDS = ["-c", "-l", "-w"]
 
 def legal_commands(input, legal_input):
     return input in legal_input
@@ -29,6 +29,9 @@ def countBytes(FILENAME):
 def countLines(data):
   return len(data.splitlines())
 
+def countWords(data):
+   return len(data.split())
+
 def main():
     if (len(sys.argv) == 1):
         print(f"ccwc {LEGAL_COMMANDS} \"test.txt\"")
@@ -45,6 +48,9 @@ def main():
         elif (command == "-l"):
             lineCount = countLines(data)
             print(str(lineCount) + f" {filename}")
+        elif (command == "-w"):
+            wordCount = countWords(data)
+            print(str(wordCount) + f" {filename}")
     else:
         print("Error in execution.")
 
