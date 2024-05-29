@@ -56,39 +56,24 @@ def print_usage():
     print(f"\nTo add a ToDo:\n{sys.argv[0]} add \"Clean Room\"\n")
     print(f"To remove or complete ToDo:\n{sys.argv[0]} remove 2\n")
 
-def checkArgs():
-    command = ""
-    if (len(sys.argv) == 1):
-        command = "help"
-    elif (len(sys.argv) >= 2 and sys.argv[1] == "print"):
-        command = "print"
-    elif (len(sys.argv) >= 2 and (sys.argv[1] == "add" or sys.argv[1] == "remove")):
-        command = "too few args"
-    elif (len(sys.argv) >= 3 and sys.argv[1] == "add"):
-        command = "add"
-    elif (len(sys.argv) >= 3 and sys.argv[1] == "remove"):
-        command = "remove"
-    else:
-        command = sys.argv[1]
-
-    return command
-
 def todoMain():
     todos = readFile()
-    action = checkArgs()
-    if (action == "help"):
-        print_usage() 
-    elif (action == "add"):
-        addTodo(todos)
-    elif (action == "remove"):
-        removeTodo(todos)
-    elif (action == "print"):
-        printList(todos)
-    elif (action == "too few args"):
-        print("Not enough arguments: add/remove needs at least three arguments.")
+    argumentLength = len(sys.argv)
+    actions = ("print", "add", "remove")
+    if (argumentLength == 1):
         print_usage()
+    elif (argumentLength >= 2 and sys.argv[1] in actions):
+        if (sys.argv[1] == "print"):
+            printList(todos)
+        else:
+            print(f"{sys.argv[1]} requires at least one input value.")
+    elif (argumentLength >= 3 and sys.argv[1] in actions):
+        if (sys.argv[1] == "add"): 
+            addTodo(todos)
+        elif (sys.argv[1] == "remove"):
+            removeTodo(todos)
     else:
-        print(f"Invalid command: {action}")
+        print(f"Invalid command: {sys.argv[1]}")
     saveFile(todos)
 
 todoMain()
