@@ -13,12 +13,8 @@ def legal_commands(input, legal_input):
 
 def countBytes(FILENAME):
     try:
-        count = 0
         with open(FILENAME, "rb") as file:
-            for byte in file:
-                for c in byte:
-                    count += 1
-        return count
+            return len(file.read())
     except Exception as e:
         print(e)
 
