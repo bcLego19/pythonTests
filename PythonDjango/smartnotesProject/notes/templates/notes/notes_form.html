@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form action="{% url 'notes.new' %}" method="post">
+    {{ form }}
+
+</form>
+
+{% endblock %}
