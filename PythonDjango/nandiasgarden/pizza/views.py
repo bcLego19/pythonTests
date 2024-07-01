@@ -20,7 +20,7 @@ def order(request):
         form = PizzaForm()
         return render(request, 'pizza/order.html', {'pizzaform': form, 'multiple_form': multiple_form})
     
-def pizzas(self):
+def pizzas(request):
     number_of_pizzas = 2
     filled_multiple_pizza_form = MultiplePizzaForm(request.GET)
     if filled_multiple_pizza_form.is_valid():
@@ -36,3 +36,5 @@ def pizzas(self):
         else:
             note = 'Order was not created, please try again.'
         return render(request, 'pizza/pizzas.html', {'note': note, 'formset': formset})
+    else:
+        return render(request, 'pizza/pizzas.html', {'formset': formset})
