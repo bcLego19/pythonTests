@@ -1,7 +1,8 @@
-<!DOCTYPE html>
+{% extends 'pizza/base.html' %}
+{% block 'body' %}
 
-<h1>Nandia's Garden</h1>
+<div class="text-center">
+    <img src="" class="img-fluid" alt="Nandia's Garden">
+</div>
 
-<a href="{% url 'order' %}">Order a pizza</a>
-
-</html>
+{% endblock %}
