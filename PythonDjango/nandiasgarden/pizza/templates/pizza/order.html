@@ -9,27 +9,37 @@
   <body>
     {% load widget_tweaks %}
 
-    <h1>Order a Pizza</h1>
+    <div class="container">
 
-    <h2>{{ note }}</h2>
-    {% if created_pizza_pk %}
-    <a href="{% url 'edit_order' created_pizza_pk %}">Edit Your Order</a>
-    {% endif %}
+        <h1>Order a Pizza</h1>
 
-    <form action="{% url 'order' %}" method="post">
-        {% csrf_token %}
-        {{ pizzaform }}
-        <input type="submit" value="Order Pizza">
-    </form>
+        <h2>{{ note }}</h2>
+        {% if created_pizza_pk %}
+        <a href="{% url 'edit_order' created_pizza_pk %}">Edit Your Order</a>
+        {% endif %}
 
-    <br><br>
+        <form action="{% url 'order' %}" method="post">
+            {% csrf_token %}
+            {% for field in pizzaform %}
+            <div class="form-group">
+            {{ field.errors }}
+            {{ field.label_tag }}
+            {% render_field field class="form-control" %}
+            </div>
+            {% endfor %}
+            <input type="submit" value="Order Pizza">
+        </form>
 
-    Want more than one pizza?
+        <br><br>
 
-    <form action="{% url 'pizzas' %}" method="get">
-        {{ multiple_form }}
-        <input type="submit" value="Get Pizzas">
-    </form>
+        Want more than one pizza?
+
+        <form action="{% url 'pizzas' %}" method="get">
+            {{ multiple_form }}
+            <input type="submit" value="Get Pizzas">
+        </form>
+
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   </body>
