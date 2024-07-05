@@ -144,6 +144,13 @@ def main_menu():
   
   print("options: " + options)
 
+  if (options == "one"):
+    print("you chose to get one video")
+  elif (options == "many"):
+    print("you chose to get multiple videos")
+
+  print("\nGoodbye!")
+
   return
 
 # Execute the search and choose function if script is run directly
