@@ -131,7 +131,21 @@ def download_video(video_url, download_audio=False):
   except Exception as e:
     print(f"An error has occurred: {e}")
 
+def main_menu():
+  """
+  This is the main driver function for the menu. Based on the given information from the user,
+  it will download one or multiple files from youtube.
+  """
+  print("Welcome to pytube menu!")
+  options = get_user_input("Do you want to download one or multiple files? (enter \"one\" or \"many\"): ")
+  
+  while ( options not in ["one", "many", "exit"] ):
+    options = get_user_input("Do you want to download one or multiple files? (enter \"one\" or \"many\"): ")
+  
+  print("options: " + options)
+
+  return
 
 # Execute the search and choose function if script is run directly
 if __name__ == "__main__":
-  search_and_choose()
+  main_menu()
