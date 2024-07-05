@@ -33,7 +33,7 @@ def download_stream(stream, filepath=None):
     filepath = filepath if filepath else download_dir
 
     # Download logic using stream.download(filepath)
-    stream.download(filepath, callback=on_progress)
+    stream.download(filepath)
     print("Download completed successfully.")
   except Exception as e:
     raise DownloadError(f"An error occurred during download: {e}") from e
