@@ -3,6 +3,7 @@
 # Experiment to test YouTube video download functionality (comments added 11/17/2023)
 from pytube.cli import on_progress
 from pytube import YouTube, Search
+from pytube.exceptions import PytubeError
 import os
 
 # Default directory global
@@ -47,55 +48,52 @@ class DownloadError(Exception):
 # Function to handle YouTube search and video selection process
 def search_and_choose():
     """
-    This function prompts the user for a search query, performs a YouTube search,
-    displays results, allows browsing additional pages, and lets the user choose a video
-    to download (entire video or audio only).
+    Prompts the user for a search query, performs a YouTube search, displays results,
+    allows browsing additional pages, and lets the user choose a video to download.
+
+    This function handles potential exceptions during the search process.
     """
-    query = get_user_input("Enter your search query: ")
-
-    # Perform YouTube search and store results
-    search_obj = Search(query)
-    search_results = search_obj.results
-
-    # Handle case with no search results
-    if not search_results:
-        print("No search results found.")
-        return
-
-    # Display search results with titles and watch URLs
-    print("Search Results:")
-    for i, result in enumerate(search_results, start=1):
-        print(f"{i}. {result.title} - {result.watch_url}")
-
-    # Allow viewing additional results (pagination)
     while True:
-        view_more = input("Do you want to view more results? (y/n): ").lower()
-        if view_more == 'y':
-            next_page_results = search_obj.get_next_results()
-        for i, result in enumerate(next_page_results[len(search_results):], start=len(search_results) + 1):
-            print(f"{i}. {result.title} - {result.watch_url}")
-            search_results.extend(next_page_results)  # Update search_results with new page
-        else:
-            break
+        query = get_user_input("Enter your search query: ")
 
-    # Prompt user to choose a video or exit
-    try:
-        choice = int(get_user_input("Enter the number of the video you want to download (0 to exit): "))
-        if 0 < choice <= len(search_results):
-            chosen_video = search_results[choice - 1]
+        try:
+            # Perform YouTube search and store results
+            search_obj = Search(query)
+            search_results = search_obj.results
 
-            # Prompt user to choose video or audio download and call download function
-            download_option = get_user_input("Do you want to download Video (v) or Audio (a) only? ").lower()
-            if download_option == 'v':
-                download_video(chosen_video.watch_url, download_audio=False)
-            elif download_option == 'a':
-                download_video(chosen_video.watch_url, download_audio=True)
-            else:
-                print("Invalid choice. Exiting.")
-        else:
-            print("Invalid choice. Exiting.")
-    except ValueError:
-        print("Invalid input. Please enter a valid number.")
+            # Handle case with no search results
+            if not search_results:
+                print("No search results found.")
+                continue
+
+            # Display search results with titles and watch URLs
+            print("Search Results:")
+            for i, result in enumerate(search_results, start=1):
+                print(f"{i}. {result.title} - {result.watch_url}")
+
+            # Allow viewing additional results (pagination)
+            while True:
+                view_more = get_user_input("Do you want to view more results? (y/n): ").lower()
+                if view_more == 'y':
+                    next_page_results = search_obj.get_next_results()
+                    for i, result in enumerate(next_page_results[len(search_results):], start=len(search_results) + 1):
+                        print(f"{i}. {result.title} - {result.watch_url}")
+                    search_results.extend(next_page_results)  # Update search_results with new page
+                else:
+                    break
+
+            # Call get_user_choice to handle video and download option selection
+            video_info = get_user_choice(search_results)
+            if video_info:  # Check if user exited due to invalid input (get_user_choice returns None)
+                download_video(video_info["url"], video_info["download_audio"])
+                break  # Exit the loop after successful download
+        
+        except PytubeError as e:
+            print(f"An error occurred during the search: {e}")
+        except Exception as e:  # Catch unexpected exceptions
+            print(f"An unexpected error occurred: {e}")
+
+        print("Search failed. Please try again.")  # General message after exceptions
 
 def get_user_choice(search_results):
     """
@@ -119,14 +117,13 @@ def get_user_choice(search_results):
                 return {
                     "url": chosen_video.watch_url,
                     "title": chosen_video.title,
-                    "download_option": download_option,
+                    "download_audio": download_option == "a",
                 }
             else:
                 print("Invalid choice. Please enter 'v' or 'a'.")
         else:
             print("Invalid choice. Exiting.")
             return None  # Indicate user exited due to invalid input
-
 
 def download_video(video_url, download_audio=False):
     """
@@ -177,6 +174,7 @@ def main_menu():
 
     if (options == "one"):
         print("you chose to get one video")
+        search_and_choose()
     elif (options == "many"):
         print("you chose to get multiple videos")
 
