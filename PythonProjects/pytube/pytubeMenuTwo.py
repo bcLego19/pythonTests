@@ -57,36 +57,7 @@ def search_and_choose():
         query = get_user_input("Enter your search query: ")
 
         try:
-            # Perform YouTube search and store results
-            search_obj = Search(query)
-            search_results = search_obj.results
-
-            # Handle case with no search results
-            if not search_results:
-                print("No search results found.")
-                continue
-
-            # Display search results with titles and watch URLs
-            print("Search Results:")
-            for i, result in enumerate(search_results, start=1):
-                print(f"{i}. {result.title} - {result.watch_url}")
-
-            # Allow viewing additional results (pagination)
-            while True:
-                view_more = get_user_input("Do you want to view more results? (y/n): ").lower()
-                if view_more == 'y':
-                    next_page_results = search_obj.get_next_results()
-                    for i, result in enumerate(next_page_results[len(search_results):], start=len(search_results) + 1):
-                        print(f"{i}. {result.title} - {result.watch_url}")
-                    search_results.extend(next_page_results)  # Update search_results with new page
-                else:
-                    break
-
-            # Call get_user_choice to handle video and download option selection
-            video_info = get_user_choice(search_results)
-            if video_info:  # Check if user exited due to invalid input (get_user_choice returns None)
-                download_video(video_info["url"], video_info["download_audio"])
-                break  # Exit the loop after successful download
+            perform_search_with_pagination(query)
         
         except PytubeError as e:
             print(f"An error occurred during the search: {e}")
@@ -94,6 +65,41 @@ def search_and_choose():
             print(f"An unexpected error occurred: {e}")
 
         print("Search failed. Please try again.")  # General message after exceptions
+
+def perform_search_with_pagination(query):
+    # Perform YouTube search and store results
+    search_obj = Search(query)
+    search_results = search_obj.results
+
+    # Handle case with no search results
+    if not search_results:
+        print("No search results found.")
+        return
+    else:
+
+        # Display search results with titles and watch URLs
+        print("Search Results:")
+        for i, result in enumerate(search_results, start=1):
+            print(f"{i}. {result.title} - {result.watch_url}")
+
+        # Allow viewing additional results (pagination)
+        while True:
+            view_more = get_user_input("Do you want to view more results? (y/n): ").lower()
+            if view_more == 'y':
+                next_page_results = search_obj.get_next_results()
+                for i, result in enumerate(next_page_results[len(search_results):], start=len(search_results) + 1):
+                    print(f"{i}. {result.title} - {result.watch_url}")
+                search_results.extend(next_page_results)  # Update search_results with new page
+            else:
+                break
+        
+        # Call get_user_choice to handle video and download option selection
+            video_info = get_user_choice(search_results)
+            if video_info:  # Check if user exited due to invalid input (get_user_choice returns None)
+                download_video(video_info["url"], video_info["download_audio"])
+                break  # Exit the loop after successful download
+    
+    return
 
 def get_user_choice(search_results):
     """
