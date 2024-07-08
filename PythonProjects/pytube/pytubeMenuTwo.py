@@ -4,7 +4,7 @@
 from pytube.cli import on_progress
 from pytube import YouTube, Search
 from pytube.exceptions import PytubeError
-import os
+import os, sys
 
 # Default directory global
 DEFAULT_DOWNLOAD_DIR = os.getcwd()
@@ -46,7 +46,7 @@ class DownloadError(Exception):
     pass
 
 # Function to handle YouTube search and video selection process
-def search_and_choose():
+def search_and_choose(directory_name=None):
     """
     Prompts the user for a search query, performs a YouTube search, displays results,
     allows browsing additional pages, and lets the user choose a video to download.
@@ -56,7 +56,7 @@ def search_and_choose():
     query = get_user_input("Enter your search query: ")
 
     try:
-        perform_search_with_pagination(query)
+        perform_search_with_pagination(query, directory_name)
         return
     except PytubeError as e:
         print(f"An error occurred during the search: {e}")
@@ -65,7 +65,7 @@ def search_and_choose():
 
     print("Search failed. Please try again.")  # General message after exceptions
 
-def perform_search_with_pagination(query):
+def perform_search_with_pagination(query, directory_name=None):
     # Perform YouTube search and store results
     search_obj = Search(query)
     search_results = search_obj.results
@@ -96,7 +96,7 @@ def perform_search_with_pagination(query):
         # Call get_user_choice to handle video and download option selection
         video_info = get_user_choice(search_results)
         if video_info:  # Check if user exited due to invalid input (get_user_choice returns None)
-            download_video(video_info["url"], video_info["download_audio"])
+            download_video(video_info["url"], video_info["download_audio"], directory_name)
     
     return
 
@@ -133,7 +133,7 @@ def get_user_choice(search_results):
             print("Invalid choice. Exiting.\n")
             return None  # Indicate user exited due to invalid input
 
-def download_video(video_url, download_audio=False):
+def download_video(video_url, download_audio=False, directory_name=None):
     """
     This function downloads a YouTube video (entire video or audio only) based on the URL
     and user selection. It prompts the user for a file path, displays download status messages,
@@ -150,9 +150,12 @@ def download_video(video_url, download_audio=False):
             # Get the highest resolution video stream
             video_stream = yt.streams.get_highest_resolution()
 
-        # Prompt user for file path or use current directory if none provided
-        filepath = get_user_input("Enter the file path to save the {} (press Enter for current directory): ".format("audio" if download_audio else "video"))
-        filepath = filepath if filepath else None
+        # If no path given, prompt user for file path or use current directory if none provided; otherwise, use provided path to directory
+        if (directory_name == None):
+            filepath = get_user_input("Enter the file path to save the {} (press Enter for current directory): ".format("audio" if download_audio else "video"))
+            filepath = filepath if filepath else None
+        else:
+            filepath = directory_name
 
         # Print download start message with chosen filename or indicating current directory
         print(f"Starting download of {'audio' if download_audio else 'video'} [{yt.title}] to {filepath or 'the current directory'}")
@@ -172,6 +175,14 @@ def main_menu():
     This is the main driver function for the menu. Based on the given information from the user,
     it will download one or multiple files from youtube.
     """
+    directory_name = None
+
+    if len(sys.argv) > 1:
+        if os.path.isdir(sys.argv[1]):
+            directory_name = sys.argv[1]
+        else:
+            print(str(sys.argv[1]) + " is not a valid directory location.")
+
     print("Welcome to pytube menu!")
     options = get_user_input("Do you want to download one or multiple files? (enter \"one\" or \"many\"): ")
     
@@ -182,7 +193,7 @@ def main_menu():
 
     if (options == "one"):
         print("you chose to get one video")
-        search_and_choose()
+        search_and_choose(directory_name)
     elif (options == "many"):
         print("you chose to get multiple videos")
 
