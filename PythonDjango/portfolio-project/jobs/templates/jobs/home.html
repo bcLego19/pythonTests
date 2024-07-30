@@ -2,8 +2,14 @@
 
     <body>
         <h1>
-            Hello World!
+            All my jobs
         </h1>
+
+        {% for job in jobs.all %}
+
+        {{ job.summary }}
+
+        {% endfor %}
     </body>
 
 </html>

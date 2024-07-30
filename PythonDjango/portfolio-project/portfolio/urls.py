@@ -20,5 +20,5 @@ import jobs.views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', jobs.views.conner, name='home'),
+    path('', jobs.views.homepage, name='home'),
 ]
