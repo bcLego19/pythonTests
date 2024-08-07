@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+
+    <body>
+        <h1>Add Todo</h1>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="title">
+            <button type="submit">Add</button>
+        </form>
+    </body>
+
+</html>
