@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+
+    <body>
+        <h1>Todo List</h1>
+        <ul>
+            {% for todo in todo_list %}
+                <li>{{todo.title}}</li>
+            {% endfor %}
+        </ul>
+        <a href="/add">Add Todo</a>
+    </body>
+
+</html>
