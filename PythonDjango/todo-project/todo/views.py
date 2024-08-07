@@ -12,4 +12,4 @@ def add_todo(request):
         new_todo = Todo(title=title)
         new_todo.save()
         return redirect('/')
-    return render(request, 'todolist/add.html')
+    return render(request, 'todo/add.html')
