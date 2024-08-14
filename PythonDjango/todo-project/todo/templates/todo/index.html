@@ -13,6 +13,7 @@
                 <input type="hidden" name="todo_id" value="{{ todo.id }}">
                 <input type="checkbox" name="completed" value="{{ todo.id }}" {% if todo.completed %}checked{% endif %} disabled>
                 {{ todo.title }}
+                <a href="{% url 'delete_todo' todo.id %}">Delete</a>
             </li>
             {% endfor %}
         </ul>
