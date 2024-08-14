@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
 from .models import Todo
+from .forms import TodoForm
 
 # Create your views here.
 def index(request):
     todo_list = Todo.objects.all()
-    return render(request, 'todo/index.html', {'todo_list': todo_list})
+    form = TodoForm()
+    return render(request, 'todo/index.html', {'form': form})
 
 def add_todo(request):
     if request.method == 'POST':
