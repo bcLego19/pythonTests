@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Todo List</title>
+</head>
+<body>
+    <h1>Todo List</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <ul>
+            {% for todo in todo_list %}
+            <li>
+                <input type="hidden" name="todo_id" value="{{ todo.id }}">
+                <input type="checkbox" name="completed" value="{{ todo.id }}" {% if todo.completed %}checked{% endif %} disabled>
+                {{ todo.title }}
+                <a href="{% url 'delete_todo' todo.id %}">Delete</a>
+            </li>
+            {% endfor %}
+        </ul>
+        <button type="submit">Toggle All</button>
+    </form>
+    <a href="/add">Add Todo</a>
+</body>
+</html>

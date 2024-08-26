@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T9q7T1NY9uqNm023v8i4/u74MKro5F71C11/6954nCQPw5w/EGqk1Q15GnU/OLfa" crossorigin="anonymous">
+</head>
+<body>
+    <header>
+        </header>
+    <main role="main" class="container">
+        {% block content %}
+        {% endblock %}
+    </main>
+    <footer>
+        </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C89scLLqNg519Ik4x4Y70DKV3jzQ2Fv96rRUt8sF37JoSa46dZ6BFW2kqYGXh4" crossorigin="anonymous"></script>
+</body>
+</html>
